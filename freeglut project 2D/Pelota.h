@@ -2,6 +2,7 @@
 #ifndef PELOTA_H
 #define PELOTA_H
 #include <GL/freeglut.h>
+#include <time.h>
 #include "PV2D.h"
 class Pelota
 {
@@ -11,9 +12,16 @@ public:
 	centro.x=centro.x-200;
 	centro.y=centro.y;
 	crearContorno();
-	direccion = PV2D(5.0,2.0).normalizar();
-	velocidad = 3;
-	direccion = direccion * velocidad;
+	srand(time(NULL));
+	GLdouble dirx = rand()%4;
+	GLdouble diry = rand()%4;
+
+	if(rand()%2 <1) dirx = -dirx;
+	if(rand()%2 <1) diry = -diry;
+
+	direccion = PV2D(dirx,diry).normalizar();
+	velocidad = 5;
+	
 	}
 
 	int getVelocidad();

@@ -1,3 +1,4 @@
+/**ALVARO QUESADA PIMENTEL**/
 #include "PV2D.h"
 #include <cmath>
 bool PV2D::esCero(){

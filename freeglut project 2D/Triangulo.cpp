@@ -1,50 +1,55 @@
+/**ALVARO QUESADA PIMENTEL**/
 #include "Triangulo.h"
 #include "Circulo.h"
 #include <cmath>
 
+const double EPSILON = 0.00001; 
+extern bool relleno;
+extern bool dborde;
+
 void Triangulo::draw(){
 	glColor3f(1.0,0.0,0.0); 
-	glBegin ( GL_LINE_LOOP ) ;
-		for(int i = 0; i<3; i++){
-			
-			glVertex2d( vertices[i].x, vertices[i].y );
-			
-		}
-	glEnd () ;
 
-	/*glBegin(GL_LINES);
-		for(int i = 0; i<3; i++){
+	if(!relleno){
+		glBegin ( GL_LINE_LOOP ) ;
+			for(int i = 0; i<3; i++){
 			
-			PV2D p = vertices[(i+1)%3]-vertices[i];
-			p = p/2;
-			p =  p + vertices[i];
-			glVertex2d( p.x, p.y );
-
-			p = p + (normales[i]*10);
-			glVertex2d( p.x,p.y);
+				glVertex2d( vertices[i].x, vertices[i].y );
 			
-		}
+			}
+		glEnd () ;
+	}
+	
+	else{
+		glBegin ( GL_TRIANGLES ) ;
+			for(int i = 0; i<3; i++){
+			
+				glVertex2d( vertices[i].x, vertices[i].y );
+			
+			}
+		glEnd () ;
+	}
 
-	glEnd () ;*/
-
-	if(visible){
-		for(int i = 0; i<6; i++){
-			contorno[i]->draw();
+	if(dborde){
+		if(visible){
+			for(int i = 0; i<6; i++){
+				contorno[i]->draw();
+			}
 		}
 	}
 }
 
 bool Triangulo::interseccionVSpelota(PV2D p, PV2D v,GLdouble &tIn, PV2D &normalIn){
 	
-		PV2D vnormal = v.normalIz();
+		PV2D vnormal = v.normalIz().normalizar();;
 		int dist[3]; int proy[3]; int sign[3];
 
 		for(int i =0; i<3; i++){
 			dist[i] = (vertices[i] - p) * vnormal;
 
-			if(dist[i]>0) sign[i] = 1; 
-			else if(dist[i]<0) sign[i] = -1;
-			else if(dist[i]==0) sign[i] = 0;
+			if(dist[i]>EPSILON) sign[i] = 1; 
+			else if(dist[i]<EPSILON) sign[i] = -1;
+			else sign[i] = 0;
 
 			proy[i] = (vertices[i] - p) * v;
 		
@@ -80,7 +85,7 @@ bool Triangulo::interseccionVSpelota(PV2D p, PV2D v,GLdouble &tIn, PV2D &normalI
 
 		int m = mini(hit);
 
-		tIn = hit[m]*0.1; normalIn = n[m];
+		tIn = hit[m]; normalIn = n[m];
 		return true;
 	
 }

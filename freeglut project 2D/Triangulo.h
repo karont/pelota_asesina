@@ -1,3 +1,4 @@
+/**ALVARO QUESADA PIMENTEL**/
 #ifndef TRIANGULO_H
 #define TRIANGULO_H
 #include "PV2D.h"

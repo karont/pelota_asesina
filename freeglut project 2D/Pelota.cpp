@@ -3,23 +3,36 @@
 #include <cmath>
 
 const int PI = 3.14159265358979323846 ;
+extern bool relleno;
 
 void Pelota::draw(){
 
 	glColor3f(0.0,0.0,1.0); 
-	glBegin(GL_LINE_LOOP); 
-		for(int i = 0; i < 20; i++) 
-		{ 
 
-			glVertex2f(contorno[i].x, contorno[i].y);//output vertex 
+	if(!relleno){
+		glBegin(GL_LINE_LOOP); 
+			for(int i = 0; i < 20; i++) 
+			{ 
 
-		} 
-	glEnd(); 
+				glVertex2f(contorno[i].x, contorno[i].y);//output vertex 
 
-	glBegin(GL_POINTS);
-	 glVertex2d(centro.x,centro.y);
-	glEnd();
+			} 
+		glEnd(); 
 
+		glBegin(GL_POINTS);
+		 glVertex2d(centro.x,centro.y);
+		glEnd();
+	}
+	else{
+		glBegin(GL_POLYGON); 
+			for(int i = 0; i < 20; i++) 
+			{ 
+
+				glVertex2f(contorno[i].x, contorno[i].y);//output vertex 
+
+			} 
+		glEnd(); 
+	}
 }
 
 PV2D Pelota::getDireccion(){

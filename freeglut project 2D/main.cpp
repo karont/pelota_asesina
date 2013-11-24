@@ -11,11 +11,14 @@
 using namespace std;
 
 bool autom = false;
+bool rebotecentro = false;
+bool dborde = false;
+bool relleno = false;
 // Freeglut parameters
 // Flag telling us to keep processing events
 // bool continue_in_main_loop= true; //(**)
 
-int const timer = 1;
+int const timer = 20;
 // Viewport size
 GLdouble WIDTH= 1000.0, HEIGHT= 500.0;
 
@@ -106,14 +109,17 @@ void key(unsigned char key, int x, int y){
 	glutLeaveMainLoop (); //Freeglut's sentence for stopping glut's main loop (*)
     break;
   case 'h':
-		cout<< "Pulsa 'a' para anidar cuadrados"<<endl;
-		cout<< "Pulsa 's' para desanidar cuadrados"<<endl;
+		cout<< "Pulsa 'a' para avanzar la pelota paso a paso"<<endl;
+		cout<< "Pulsa 's' para activar/desactivar el movimiento automatico"<<endl;
+		cout<< "Pulsa 'd' para activar/desactivar el rebote con el centro"<<endl;
+		cout<< "Pulsa 'f' para activar/desactivar el relleno de los poligonos"<<endl;
+		cout<< "Pulsa 'g' para activar/desactivar el dibujo del contorno de los obstaculos"<<endl;
 		cout<< "Pulsa '+' para aumentar el zoom"<<endl;
 		cout<< "Pulsa '-' para desaumentar el zoom"<<endl;
 		cout<< "Pulsa 'q' para aumentar el zoom progresivamente "<<endl;
 		cout<< "Pulsa 'w' para desaumentar el zoom progresivamente "<<endl;
-		cout<< "Pulsa 'e' para embaldosar la escena"<<endl;
-		cout<< "Pulsa 'r' para desembaldosar la escena"<<endl;
+		//cout<< "Pulsa 'e' para embaldosar la escena"<<endl;
+		//cout<< "Pulsa 'r' para desembaldosar la escena"<<endl;
 
 	 break;
 	 case 's':
@@ -122,6 +128,16 @@ void key(unsigned char key, int x, int y){
 	break;
 	case 'a':
 		miescena.step();
+	break;
+	case 'd':
+		rebotecentro = !rebotecentro;
+	break;
+
+	case 'f':
+		relleno = !relleno;
+	break;
+	case 'g':
+		dborde = !dborde;
 	break;
 	 
 	case 'q':

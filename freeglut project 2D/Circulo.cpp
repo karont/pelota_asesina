@@ -1,8 +1,11 @@
+/**ALVARO QUESADA PIMENTEL**/
 #include "Circulo.h"
 #include <cmath>
 #include <iostream>
 
 const double EPSILON = 0.00001; 
+extern bool dborde;
+extern bool relleno;
 void Circulo::crearLados(){
 
 	GLdouble cx = centro.x;
@@ -23,7 +26,24 @@ void Circulo::crearLados(){
 void Circulo::draw(){
 
 	glColor3f(1.0,0.0,0.0); 
-	glBegin(GL_LINE_LOOP); 
+	if(!relleno){
+		glBegin(GL_LINE_LOOP); 
+			for(int i = 0; i < 20; i++) 
+			{ 
+
+				glVertex2f(lados[i].x, lados[i].y);//output vertex 
+
+			} 
+		glEnd(); 
+
+		if (dborde)if (visible)circuloRecubridor->draw();
+
+		glBegin(GL_POINTS);
+		 glVertex2d(centro.x,centro.y);
+		glEnd();
+	}
+	else{
+	glBegin(GL_POLYGON); 
 		for(int i = 0; i < 20; i++) 
 		{ 
 
@@ -31,45 +51,44 @@ void Circulo::draw(){
 
 		} 
 	glEnd(); 
-
-	if (visible)circuloRecubridor->draw();
-	glBegin(GL_POINTS);
-	 glVertex2d(centro.x,centro.y);
-	glEnd();
-
+	}
 }
 bool Circulo::interseccionVSpelota(PV2D p, PV2D v,GLdouble &tIn, PV2D &normalIn){
-	v = v;
+	v = v.normalizar();;
 	GLdouble A = v*v;
-	GLdouble B = (p-centro)*v;
+	GLdouble B = 2*((p-centro)*v);
 	GLdouble C = ((p-centro)*(p-centro)) - (radio*radio);
 
 	GLdouble discriminante = B*B - 4*A*C;
 
 	if (discriminante < EPSILON) return false;
 
-	else if (discriminante == EPSILON){
-		tIn = (-B/(2*A))*0.1;
-		normalIn = (p-centro).normalizar();
-
-		std::cout<<"1 inter ----- " <<tIn<< std::endl;
-		return true;
-	}
 	
-	else{
-		GLdouble tIn1 = (-B - pow(discriminante,0.5))/(2*A);
-		GLdouble tIn2 = (-B + pow(discriminante,0.5))/(2*A);
-		
-		normalIn = (p-centro).normalizar();
-		if(tIn1 >= tIn2) tIn = tIn2*0.1;
-		else tIn = tIn1*0.1;
+	
+	else if(discriminante > EPSILON){
 
-		std::cout<<"2 inter " <<tIn<< std::endl;
+		GLdouble tIn1 = (-B-sqrt(discriminante))/2*A;
+		GLdouble tIn2 = (-B+sqrt(discriminante))/2*A;
+		
+			normalIn = ((p-centro)+v).normalizar();
+
+		if(tIn1 >= tIn2) tIn = tIn2;
+		else tIn = tIn1;
+
+		/*std::cout<<"2 inter ****" <<tIn<< std::endl;
 		std::cout<<"2 inter1 " <<tIn1<< std::endl;
-		std::cout<<"2 inter2 " <<tIn2<< std::endl;
+		std::cout<<"2 inter2 " <<tIn2<< std::endl;*/
 		return true;
 	}
-	return false;
+
+	else{
+		tIn = (-B/(2*A));
+		normalIn = ((p-centro)+v).normalizar();
+
+		//std::cout<<"1 inter ----- " <<tIn<< std::endl;
+		return true;
+	}
+
 }
 int Circulo::getTamContorno(){
 	return 1;

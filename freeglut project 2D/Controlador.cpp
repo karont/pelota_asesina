@@ -1,7 +1,10 @@
+/**ALVARO QUESADA PIMENTEL**/
 #include "Controlador.h"
 #include "PV2D.h"
 #include <iostream>
 const double EPSILON = 0.00001; 
+
+extern bool rebotecentro;
 void Controlador::draw(){
 
 	pelota.draw();
@@ -15,40 +18,65 @@ void Controlador::draw(){
 }
 
 void Controlador::step(){
-	GLdouble tin = 1;
+
+	GLdouble tin = pelota.getVelocidad();;
 	GLdouble tinaux = 1;
+
 	PV2D normal = PV2D(0.0,0.0);
 	PV2D normalaux = normal;
+	bool intersec = false;
+
 	Lista<Obstaculo*> :: Iterador it = listTriangulos.principio();
-	int tam =1;
-	while(it != listTriangulos.final()){
+
+	if(!rebotecentro){
+
+		int tam = 1;
+		while(it != listTriangulos.final()){
 		
-		tam = it.elem()->getTamContorno();
-		for(int i=0; i<tam; i++){
+			tam = it.elem()->getTamContorno();
+			for(int i=0; i<tam; i++){
 
-			if(it.elem()->getContorno(i)->interseccionVSpelota(pelota.getCentro(),pelota.getDireccion(), tinaux,normalaux)){
+				if(it.elem()->getContorno(i)->interseccionVSpelota(pelota.getCentro(),pelota.getDireccion(), tinaux,normalaux)){
 
-				if(tinaux < tin && tinaux >= EPSILON){
+					if(tinaux < tin && tinaux >= 0){
 
-					tin= abs(tinaux);
+						tin= tinaux;
+						normal=normalaux;
+						intersec = true;
+				
+					}
+				}
+			}
+		
+			it.avanza();
+		}
+
+	}
+
+	else{
+
+		
+		while(it != listTriangulos.final()){
+		
+			if(it.elem()->interseccionVSpelota(pelota.getCentro(),pelota.getDireccion(), tinaux,normalaux)){
+
+				if(tinaux < tin && tinaux >= 0){
+
+					tin= tinaux;
 					normal=normalaux;
+					intersec = true;
 				
 				}
 			}
+		
+			it.avanza();
 		}
-		
-		it.avanza();
 	}
-	if(tin>0 && tin<1){
-		std::cout<<tin<<std::endl;
-		
-		pelota.mover(tin);
+	pelota.mover(tin);
+
+	if(intersec){
 		pelota.rebotar(normal);
 	}
-
-	else pelota.mover(1);
-
-
 }
 
 void Controlador::crearBordes(){
